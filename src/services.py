@@ -1,17 +1,28 @@
 import asyncio
 import os
-from src.functions.function import semantic_search, hybrid_search
+from src.functions.weaviate_functions import semantic_search, hybrid_search
+from src.functions.gemini_function_call import gemini_function_call
 from src.client import client
-from src.workflows.workflow import GreetingWorkflow
+from src.workflows.workflow import CurriculumWorkflow
 from watchfiles import run_process
 from restack_ai.restack import ServiceOptions
 import webbrowser
 
 async def main():
-
-    await client.start_service(
-        workflows=[GreetingWorkflow],
-        functions=[semantic_search, hybrid_search]
+    
+    await asyncio.gather(
+        client.start_service(
+            workflows=[CurriculumWorkflow],
+            functions=[semantic_search, hybrid_search]
+        ),
+        client.start_service(
+            functions=[gemini_function_call],
+            workflows=[],
+            options=ServiceOptions(
+                rate_limit=0.16,
+            ),
+            task_queue="gemini"
+        )
     )
 
 def run_services():

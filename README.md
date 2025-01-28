@@ -1,4 +1,4 @@
-# Restack AI - Quickstart boilerplate Python
+# Restack x Weaviate - Curriculum Agentic RAG
 
 This repository contains a quickstart for Restack.
 It demonstrates how to set up a basic workflow and functions.
@@ -6,7 +6,7 @@ It demonstrates how to set up a basic workflow and functions.
 ## Prerequisites
 
 - Docker (for running Restack)
-- Python 3.10 or higher
+- Python 3.10 < 3.13
 
 ## Start Restack
 
@@ -50,17 +50,7 @@ You can run workflows from the UI by clicking the "Run" button.
 
 You can run workflows from the API by using the generated endpoint:
 
-`POST http://localhost:6233/api/workflows/GreetingWorkflow`
-
-### from any client
-
-You can run workflows with any client connected to Restack, for example:
-
-```bash
-poetry run schedule
-```
-
-executes `schedule_workflow.py` which will connect to Restack and execute the `GreetingWorkflow` workflow.
+`POST http://localhost:6233/api/workflows/CurriculumWorkflow`
 
 ## Deploy on Restack Cloud
 
