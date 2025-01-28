@@ -15,7 +15,7 @@ class CurriculumWorkflow:
         function_results = []
         log.info("CurriculumWorkflow started")
         
-        response = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=input.user_content + "You are a helpful assistant that can use tools to search for books and create a curriculum for a user to learn about a topic", tools=True), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
+        response = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=input.user_content + "You are a helpful assistant that can use tools to search for books and create a curriculum for a user to learn about a topic", tools=True, structured_output=False), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
         
         # Check if any function calls were made
         if not response["candidates"] or all(part["functionCall"] is None for candidate in response["candidates"] for part in candidate["content"]["parts"]):
@@ -33,5 +33,5 @@ class CurriculumWorkflow:
                             semantic_result = await workflow.step(semantic_search, input=QueryInput(user_content=part["functionCall"]["args"]["user_content"]))
                             function_results.append(f"semantic_search result: {str(semantic_result)}")
         
-        curriculum = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=f"Based on the these results: {'; '.join(function_results)}, give me a curriculum for the user to learn about the topic. The curriculum should be a list of books that the user should read to learn about the topic."), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
-        return curriculum["candidates"][0]["content"]["parts"][0]["text"]
+        curriculum = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=f"Based on the these results: {'; '.join(function_results)}, give me a curriculum for the user to learn about the topic. The curriculum should be a list of books that the user should read to learn about the topic.", tools=False, structured_output=True), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
+        return curriculum["parsed"]
