@@ -12,20 +12,26 @@ class CurriculumInput(BaseModel):
 class CurriculumWorkflow:
     @workflow.run
     async def run(self, input: CurriculumInput):
-        chat_history = []
+        function_results = []
         log.info("CurriculumWorkflow started")
         
-        response = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=input.user_content + ', try to use the tools to find books and create a curriculum'), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
-        # Get function calls from response
-        for candidate in response["candidates"]:
-            for part in candidate["content"]["parts"]:
-                if "functionCall" in part:
-                    if part["functionCall"]["name"] == "hybrid_search":
-                        hybrid_result = await workflow.step(hybrid_search, input=QueryInput(user_content=part["functionCall"]["args"]["user_content"]))
-                        chat_history.append(hybrid_result)  
-                    elif part["functionCall"]["name"] == "semantic_search": 
-                        semantic_result = await workflow.step(semantic_search, input=QueryInput(user_content=part["functionCall"]["args"]["user_content"]))
-                        chat_history.append(semantic_result)
+        response = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=input.user_content + "You are a helpful assistant that can use tools to search for books and create a curriculum for a user to learn about a topic", tools=True), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
         
-        final_response = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=f"Here is the chat history: {chat_history}"), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
-        return final_response
+        # Check if any function calls were made
+        if not response["candidates"] or all(part["functionCall"] is None for candidate in response["candidates"] for part in candidate["content"]["parts"]):
+            # Force a function call if none were made
+            raise Exception("No function calls were made")
+        else:
+            # Process function calls from response
+            for candidate in response["candidates"]:
+                for part in candidate["content"]["parts"]:
+                    if "functionCall" in part and part["functionCall"]:
+                        if part["functionCall"]["name"] == "hybrid_search":
+                            hybrid_result = await workflow.step(hybrid_search, input=QueryInput(user_content=part["functionCall"]["args"]["user_content"]))
+                            function_results.append(f"hybrid_search result: {str(hybrid_result)}")
+                        elif part["functionCall"]["name"] == "semantic_search": 
+                            semantic_result = await workflow.step(semantic_search, input=QueryInput(user_content=part["functionCall"]["args"]["user_content"]))
+                            function_results.append(f"semantic_search result: {str(semantic_result)}")
+        
+        curriculum = await workflow.step(gemini_function_call, input=FunctionInputParams(user_content=f"Based on the these results: {'; '.join(function_results)}, give me a curriculum for the user to learn about the topic. The curriculum should be a list of books that the user should read to learn about the topic."), start_to_close_timeout=timedelta(seconds=120), retry_policy=RetryPolicy(maximum_attempts=1), task_queue="gemini")
+        return curriculum["candidates"][0]["content"]["parts"][0]["text"]

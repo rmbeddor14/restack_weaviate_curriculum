@@ -7,9 +7,12 @@ import os, json
 class QueryInput(BaseModel):
     user_content: str
     
-class DatabaseOutput(BaseModel):
+class BookResult(BaseModel):
     title: str
     description: str
+
+class DatabaseOutput(BaseModel):
+    books: list[BookResult]
 
 def weaviate_client():
     # Don't hardcode credentials in your code like us. This is an example.
@@ -27,9 +30,8 @@ def weaviate_client():
     # wcd_api_key = os.environ["WCD_API_KEY"]
     return client
 
-
 @function.defn()
-async def hybrid_search(input: QueryInput) -> str:
+async def hybrid_search(input: QueryInput) -> DatabaseOutput:
     try:
         client = weaviate_client()
         log.info(f"Client connected to Weaviate Cloud: {client} and hybrid search started")   
@@ -47,8 +49,16 @@ async def hybrid_search(input: QueryInput) -> str:
 
         client.close()  # Free up resources
         
-        log.info(f"Hybrid search completed: {response.objects[0].properties}")
-        return DatabaseOutput(title=response.objects[0].properties.get('title'), description=response.objects[0].properties.get('description'))
+        books = [
+            BookResult(
+                title=obj.properties.get('title'),
+                description=obj.properties.get('description')
+            )
+            for obj in response.objects
+        ]
+        
+        log.info(f"Hybrid search completed: {books}")
+        return DatabaseOutput(books=books)
 
     except Exception as e:
         log.error("welcome function failed", error=e)
@@ -71,8 +81,16 @@ async def semantic_search(input: QueryInput) -> DatabaseOutput:
             log.info(json.dumps(obj.properties, indent=2))
 
         client.close()  # Free up resources
-        return DatabaseOutput(title=response.objects[0].properties.get('title'), description=response.objects[0].properties.get('description'))
-
+        
+        books = [
+            BookResult(
+                title=obj.properties.get('title'),
+                description=obj.properties.get('description')
+            )
+            for obj in response.objects
+        ]
+        
+        return DatabaseOutput(books=books)
 
     except Exception as e:
         log.error("welcome function failed", error=e)

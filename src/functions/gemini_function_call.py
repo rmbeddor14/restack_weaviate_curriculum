@@ -12,7 +12,7 @@ class ChatMessage(BaseModel):
 
 class FunctionInputParams(BaseModel):
     user_content: str
-    
+    tools: bool = False
 
 @function.defn()
 async def gemini_function_call(input: FunctionInputParams):
@@ -25,8 +25,8 @@ async def gemini_function_call(input: FunctionInputParams):
             model='gemini-1.5-flash',
             contents=[input.user_content],
             config=types.GenerateContentConfig(
-                tools=[types.Tool(function_declarations=weaviate_tools)],
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+                tools=[types.Tool(
+                    function_declarations=weaviate_tools)] if input.tools else None
             )
         )
         return response

@@ -7,6 +7,13 @@ It demonstrates how to set up a basic workflow and functions.
 
 - Docker (for running Restack)
 - Python 3.10 < 3.13
+- Google AI Studio API key 
+
+Helpful Docs:
+
+- Restack Docs
+- Weaviate Docs
+- [Google Gen AI SDK](https://googleapis.github.io/python-genai/)
 
 ## Start Restack
 
