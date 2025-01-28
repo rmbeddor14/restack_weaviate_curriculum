@@ -1,8 +1,8 @@
 # Project metadata
 [tool.poetry]
-name = "quickstart"
+name = "restack-ai-weaviate-curriculum"
 version = "0.0.1"
-description = "A quickstart for Restack"
+description = "A Restack AI workflow and agent with Weaviate to create a curriculum for a user to learn about a topic"
 authors = [
     "Restack Team <service@restack.io>",
 ]
@@ -13,9 +13,10 @@ packages = [{include = "src"}]
 python = ">=3.10,<4.0"
 watchfiles = "^1.0.0"
 pydantic = "^2.10.4"
+weaviate-client = "^4.10.4"
+google-genai = "0.5.0"
+restack-ai = "^0.0.54"
 
-# Build system configuration
-restack-ai = "^0.0.52"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
