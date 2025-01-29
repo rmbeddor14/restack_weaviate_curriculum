@@ -1,5 +1,7 @@
 # Restack x Weaviate - Curriculum Agentic RAG
 
+## RB Test
+
 This repository contains a quickstart for Restack and Weaviate.
 It demonstrates how to set up a basic workflow and functions with RAG integrated directly into the workflow.
 
