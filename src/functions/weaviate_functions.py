@@ -96,6 +96,7 @@ async def semantic_search(input: QueryInput) -> DatabaseOutput:
         log.error("welcome function failed", error=e)
         raise e
 
+## Not best pratice, you can use pydantic to convert the funciton to a json schema
 ## Weaviate functions as tools for Gemini 
 weaviate_tools = [
     {

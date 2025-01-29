@@ -7,15 +7,15 @@ It demonstrates how to set up a basic workflow and functions with RAG integrated
 
 - Docker (for running Restack)
 - Python 3.10 < 3.13
-- Google AI Studio API key 
+- Google AI Studio API key (You can get a temporary one during the workshop)
 - Weaviate Cloud API key (Provided during the workshop)
-
 
 Helpful Docs:
 
-- Restack Docs - https://docs.restack.io/
-- Weaviate Docs - https://weaviate.io/
-- Google Gen AI SDK - https://googleapis.github.io/python-genai/
+- [Restack Docs](https://docs.restackio)
+- [Weaviate Docs](https://weaviate.io/)
+- [Google Gen AI SDK](https://googleapis.github.io/python-genai/)
+- [Google Gen AI Docs](https://ai.google.dev/gemini-api/docs/sdks)
 
 ## Start Restack
 
@@ -53,7 +53,7 @@ poetry run dev
 
 You can run workflows from the UI by clicking the "Run" button.
 
-![Run workflows from UI](./screenshot-quickstart.png)
+![Run workflows from UI](./screenshot-api-endpoints.png)
 
 ### from API
 
