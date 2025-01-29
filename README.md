@@ -1,19 +1,21 @@
 # Restack x Weaviate - Curriculum Agentic RAG
 
-This repository contains a quickstart for Restack.
-It demonstrates how to set up a basic workflow and functions.
+This repository contains a quickstart for Restack and Weaviate.
+It demonstrates how to set up a basic workflow and functions with RAG integrated directly into the workflow.
 
 ## Prerequisites
 
 - Docker (for running Restack)
 - Python 3.10 < 3.13
 - Google AI Studio API key 
+- Weaviate Cloud API key (Provided during the workshop)
+
 
 Helpful Docs:
 
-- Restack Docs
-- Weaviate Docs
-- [Google Gen AI SDK](https://googleapis.github.io/python-genai/)
+- Restack Docs - https://docs.restack.io/
+- Weaviate Docs - https://weaviate.io/
+- Google Gen AI SDK - https://googleapis.github.io/python-genai/
 
 ## Start Restack
 
@@ -62,3 +64,8 @@ You can run workflows from the API by using the generated endpoint:
 ## Deploy on Restack Cloud
 
 To deploy the application on Restack, you can create an account at [https://console.restack.io](https://console.restack.io)
+
+
+## Run your own Weaviate Cluster!
+
+To run your own Weaviate Cluster, you can create a free account at [https://console.weaviate.io](https://console.weaviate.io)
